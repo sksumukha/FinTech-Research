@@ -1,0 +1,18 @@
+import torch
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
+# Load the pre-trained FinBERT model
+model_name = "ProsusAI/finbert"  
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSequenceClassification.from_pretrained(model_name)
+
+text = "This is a positive financial news."
+inputs = tokenizer(text, return_tensors='pt')
+outputs = model(**inputs)
+logits = outputs.logits
+predicted_class = torch.argmax(logits, dim=1)
+
+# Assuming a sentiment classification task with 3 labels (positive, negative, neutral)
+label_map = {0: "negative", 1: "neutral", 2: "positive"}
+predicted_label = label_map[predicted_class.item()]
+print(predicted_label)
